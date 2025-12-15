@@ -26,6 +26,20 @@
   <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
+  <style>
+    .equal-height-figure {
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .equal-height-img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+  </style>
 
   <!-- JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
@@ -74,12 +88,20 @@
   <!-- Teaser Section -->
   <section class="section teaser pt-1 pb-1">
     <div class="container is-max-desktop has-text-centered">
-      <figure class="image is-3by1 mb-1">
-        <img src="static/images/combined_analysis.png" alt="Combined analysis">
-      </figure>
-      <figure class="image is-3by1 mb-1">
-        <img src="static/images/merged.png" alt="Merged results">
-      </figure>
+      <div class="columns is-centered">
+        <div class="column" style="max-width: 80%;">
+          <figure class="image is-3by1 mb-1">
+            <img src="static/images/combined_analysis.png" alt="Combined analysis">
+          </figure>
+        </div>
+      </div>
+      <div class="columns is-centered">
+        <div class="column" style="max-width: 80%;">
+          <figure class="image is-3by1 mb-1">
+            <img src="static/images/merged.png" alt="Merged results">
+          </figure>
+        </div>
+      </div>
       <p class="subtitle is-6 has-text-justified">
         <strong>TreeGRPO</strong> achieves the best Pareto performance across the rewards and training efficiency,
         where the single-GPU runtime is the normalized wall-clock time. Following normalized metrics in RL domains,
@@ -101,22 +123,28 @@
       </div>
     </section>
 
-    <!-- Method Section -->
     <section class="section">
       <div class="container is-max-desktop">
         <h2 class="title is-3 has-text-centered">Method</h2>
-        <figure class="image mb-3">
-          <img src="static/images/method.png" alt="Method Figure">
-        </figure>
-        <div class="content has-text-justified is-size-5 mb-4">
-            This figure illustrates the TreeGRPO method, which models the diffusion denoising process as a tree structure where stochastic transitions create branches (blue solid lines) and deterministic transitions form frozen paths (orange dashed lines). Rewards are computed at the leaf nodes and normalized to advantages, which are then backpropagated through the tree to assign credit to each decision (edge). These edge-level advantages enable targeted GRPO policy updates, improving learning efficiency by leveraging shared prefixes and multiple advantage signals from a single rollout.
+        <div class="columns is-variable is-1 is-multiline">
+          <div class="column is-half">
+            <figure class="image mb-2 equal-height-figure">
+              <img src="static/images/method.png" alt="Method" class="equal-height-img">
+            </figure>
+          </div>
+          <div class="column is-half">
+            <figure class="image mb-2 equal-height-figure">
+              <img src="static/images/algorithm.png" alt="Algorithm" class="equal-height-img">
+            </figure>
+          </div>
+          <p class="has-text-justified is-size-6">
+            TreeGRPO method, which models the diffusion denoising process as a tree structure where stochastic transitions create branches (blue solid lines) and deterministic transitions form frozen paths (orange dashed lines). Rewards are computed at the leaf nodes and normalized to advantages, which are then backpropagated through the tree to assign credit to each decision (edge). These edge-level advantages enable targeted GRPO policy updates, improving learning efficiency by leveraging shared prefixes and multiple advantage signals from a single rollout.
+          </p>
         </div>
-        <figure class="image mb-3">
-          <img src="static/images/algorithm.png" alt="Algorithm Figure">
-        </figure>
-        <p class="has-text-centered is-size-5"><strong>TreeGRPO Algorithm.</strong></p>
       </div>
     </section>
+
+
 
     <!-- Results Section -->
     <section class="section">
