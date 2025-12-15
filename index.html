@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="TreeGRPO: Tree-Advantage GRPO for Online RL Post-Training of Diffusion Models">
+
+  <title>TreeGRPO: Tree-Advantage GRPO for Online RL Post-Training of Diffusion Models</title>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GPRFW9DK4Q"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GPRFW9DK4Q');
+  </script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script defer src="./static/js/bulma-carousel.min.js"></script>
+  <script defer src="./static/js/bulma-slider.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero is-bold pb-1">
+    <div class="hero-body">
+      <div class="container is-max-desktop has-text-centered">
+        <h1 class="title is-2">
+          <strong>TreeGRPO</strong>
+        </h1>
+        <h2 class="subtitle is-4">
+          Tree-Advantage GRPO for Online RL Post-Training of Diffusion Models
+        </h2>
+        <p class="is-size-5">
+          <a href="mailto:zhding@ucsd.edu">Zheng Ding*</a><sup>1</sup>,
+          <a href="https://yewr.github.io/">Weirui Ye*</a><sup>2</sup>
+        </p>
+        <p class="is-size-5">
+          <sup>1</sup>UC San Diego &nbsp;&nbsp; <sup>2</sup>MIT CSAIL<br>
+        </p>
+        <p class="is-size-7">
+            * denotes equal contribution
+        </p>
+
+        <div class="buttons is-centered mt-4">
+          <a href="https://www.arxiv.org/pdf/2512.08153" class="button is-dark is-rounded">
+            <span class="icon"><i class="fas fa-file-pdf"></i></span>
+            <span>Paper</span>
+          </a>
+          <a href="#" class="button is-dark is-rounded is-disabled">
+            <span class="icon"><i class="fab fa-github"></i></span>
+            <span>Code (Coming soon)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser Section -->
+  <section class="section teaser pt-1 pb-1">
+    <div class="container is-max-desktop has-text-centered">
+      <figure class="image is-3by1 mb-1">
+        <img src="static/images/combined_analysis.png" alt="Combined analysis">
+      </figure>
+      <figure class="image is-3by1 mb-1">
+        <img src="static/images/merged.png" alt="Merged results">
+      </figure>
+      <p class="subtitle is-6 has-text-justified">
+        <strong>TreeGRPO</strong> achieves the best Pareto performance across the rewards and training efficiency,
+        where the single-GPU runtime is the normalized wall-clock time. Following normalized metrics in RL domains,
+        the <strong>normalized reward scores</strong> are calculated by
+        \( (r - r_{sd3.5}) / (r_{max} - r_{sd3.5}) \), where
+        \( r_{max} = \{1.0, 2.0, 10.0, 1.0\} \) for HPS, ImageReward, Aesthetic, and CLIPScore.
+      </p>
+    </div>
+  </section>
+
+  <main>
+    <!-- Abstract Section -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <div class="content has-text-justified is-size-5">
+            Reinforcement learning (RL) post-training is crucial for aligning generative models with human preferences, but its prohibitive computational cost remains a major barrier to widespread adoption. We introduce <strong>TreeGRPO</strong>, a novel RL framework that dramatically improves training efficiency by recasting the denoising process as a search tree. From shared initial noise samples, TreeGRPO strategically branches to generate multiple candidate trajectories while efficiently reusing their common prefixes. This tree-structured approach delivers three key advantages: (1) High sample efficiency, achieving better performance under same training samples (2) Fine-grained credit assignment via reward backpropagation that computes step-specific advantages, overcoming the uniform credit assignment limitation of trajectory-based methods, and (3) Amortized computation where multi-child branching enables multiple policy updates per forward pass. Extensive experiments on both diffusion and flow-based models demonstrate that TreeGRPO achieves <strong>2.4x faster training</strong> while establishing a superior Pareto frontier in the efficiency-reward trade-off space. Our method consistently outperforms GRPO baselines across multiple benchmarks and reward models, providing a scalable and effective pathway for RL-based visual generative model alignment. 
+        </div>
+      </div>
+    </section>
+
+    <!-- Method Section -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered">Method</h2>
+        <figure class="image mb-3">
+          <img src="static/images/method.png" alt="Method Figure">
+        </figure>
+        <div class="content has-text-justified is-size-5 mb-4">
+            This figure illustrates the TreeGRPO method, which models the diffusion denoising process as a tree structure where stochastic transitions create branches (blue solid lines) and deterministic transitions form frozen paths (orange dashed lines). Rewards are computed at the leaf nodes and normalized to advantages, which are then backpropagated through the tree to assign credit to each decision (edge). These edge-level advantages enable targeted GRPO policy updates, improving learning efficiency by leveraging shared prefixes and multiple advantage signals from a single rollout.
+        </div>
+        <figure class="image mb-3">
+          <img src="static/images/algorithm.png" alt="Algorithm Figure">
+        </figure>
+        <p class="has-text-centered is-size-5"><strong>TreeGRPO Algorithm.</strong></p>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered">Results</h2>
+        <div class="columns is-variable is-8 is-multiline">
+          <div class="column is-half">
+            <figure class="image mb-2">
+              <img src="static/images/result1.png" alt="Result 1">
+            </figure>
+            <p class="has-text-justified is-size-6">
+              Train using HPS-v2.1 reward model and Eval on four reward models.
+            </p>
+          </div>
+          <div class="column is-half">
+            <figure class="image mb-2">
+              <img src="static/images/result2.png" alt="Result 2">
+            </figure>
+            <p class="has-text-justified is-size-6">
+              Train using HPS-v2.1 and ClipScore reward model and Eval on four reward models.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BibTeX Section -->
+    <section class="section" id="BibTeX">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered">BibTeX</h2>
+        <pre><code>@article{ding2025treegrpo,
+  title={TreeGRPO: Tree-Advantage GRPO for Online RL Post-Training of Diffusion Models},
+  author={Ding, Zheng and Ye, Weirui},
+  journal={arXiv preprint arXiv:2512.08153},
+  year={2025}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container has-text-centered">
+      <p>
+        This website is licensed under a
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+          Creative Commons Attribution-ShareAlike 4.0 International License
+        </a>.
+      </p>
+      <p>
+        Source code borrowed from the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies project page</a>.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
+
